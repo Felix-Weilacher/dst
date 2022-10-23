@@ -325,8 +325,11 @@ begin
   exact ih,
 end
 
---to avoid conflict with metric.eventually_nhds_iff. Not sure if there is a better way to accomplish this
-@[protected] lemma eventually_nhds_iff' {α : Type*} [topological_space α] {a : α} {p : α → Prop} : (∀ᶠ (x : α) in nhds a, p x) ↔ ∃ (t : set α), (∀ (x : α), x ∈ t → p x) ∧ is_open t ∧ a ∈ t := eventually_nhds_iff
+--to avoid conflict with metric.eventually_nhds_iff. Not sure if there is a better way 
+--to accomplish this
+@[protected] lemma eventually_nhds_iff' {α : Type*} [topological_space α] {a : α} {p : α → Prop} : 
+  (∀ᶠ (x : α) in nhds a, p x) ↔ ∃ (t : set α), (∀ (x : α), x ∈ t → p x) ∧ is_open t ∧ a ∈ t :=
+  eventually_nhds_iff
 
 --A scheme map is continuous if diameter vanishes along each branch
 theorem map_cts_of_vanishing_diam [pseudo_metric_space α] [topological_space β] 
