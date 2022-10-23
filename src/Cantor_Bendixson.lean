@@ -85,9 +85,11 @@ section set_seq
 open metric
 open filter
 
-/- The proof of Cantor-Bendixson we follow makes use a sequence of sets with the same order (w.r.t. reverse inclusion) structure as 2^{<ω}. 
+/- The proof of Cantor-Bendixson we follow makes use a sequence of sets with the same order 
+(w.r.t. reverse inclusion) structure as 2^{<ω}. 
 This sort of thing is sometimes called a scheme.
-Before definining schemes, we establish some basic definitions and theorems for sequences of sets with order type ω-/ 
+Before definining schemes, we establish some basic definitions and theorems 
+for sequences of sets with order type ω-/ 
 parameters {α : Type*} (A : ℕ → set α)
 
 --The diameter of our sets goes to 0 as n → ∞
@@ -163,7 +165,8 @@ begin
   apply subset_closure,
 end
 
---The intersection of a sequence with vanishing diameter and the "closure_mono" condition is a singleton if the space is complete.
+--The intersection of a sequence with vanishing diameter and the 
+--"closure_mono" condition is a singleton if the space is complete.
 theorem exists_unique_of_closure_mono_of_vanishing_diam [metric_space α] [complete_space α] 
   (hnonempty : ∀ n, (A n).nonempty) (hmono : seq_closure_mono) (hdiam : seq_vanishing_diam) :  
   exists_unique (λ x : α, ∀ n, x ∈ A n) :=
@@ -222,7 +225,8 @@ def branch (x : ℕ → β) : ℕ → set α := λ n, A (res x n)
 def vanishing_diam [pseudo_metric_space α] : Prop := 
   ∀ x : (ℕ → β), seq_vanishing_diam (A.branch x)
 
---A typical way to establish that diameter is vanishing along all branches of a scheme is to know that it vanishes uniformly along each one.
+--A typical way to establish that diameter is vanishing along all branches of a scheme 
+--is to know that it vanishes uniformly along each one.
 theorem  vanishing_diam_of_vanishing_with_length [pseudo_metric_space α] 
   (u : ℕ → ℝ) (hu : tendsto u at_top (nhds 0))
   (h : ∀ s : list β, ∀ b : β, bounded (A (b :: s)) ∧ diam (A (b :: s)) < u s.length) :
@@ -269,13 +273,16 @@ section map
 /-The main purpose of a scheme list β → set α is to build a limiting map (ℕ → β) → α 
 This section proves an existence theorem for such maps,
 and relates their properties to properties of the scheme. 
-Much will have to be added here, and probably the definition of a scheme_map generalized, in order to carry out scheme-style proofs beyond Cantor-Bendixson, but I think this section should be a good start.
+Much will have to be added here, and probably the definition of a scheme_map generalized, 
+in order to carry out scheme-style proofs beyond Cantor-Bendixson, 
+but I think this section should be a good start.
 -/
 structure scheme_map {β α : Type*} (A : scheme β α) :=
   (map : (ℕ → β) → α)
   (mem : ∀ x : ℕ → β, ∀ n : ℕ, map x ∈ (A.branch x n))
 
---A scheme map exists if the scheme has nonempty sets, has vanishing diameter along each branch, and has the closure_mono condition
+--A scheme map exists if the scheme has nonempty sets, has vanishing diameter along each branch, 
+--and has the closure_mono condition
 noncomputable
 def map_from_closed_mono_and_vanishing_diam [metric_space α] [complete_space α] 
   (hnonempty : A.nonempty) (hmono : A.closure_mono) (hdiam : A.vanishing_diam) : A.scheme_map :=
@@ -399,7 +406,8 @@ def perf_nonempty [topological_space α] (C : set α) : Prop := set.nonempty C �
 
 namespace perf_nonempty
 
--- The closure of the intersection of a nonempty perfect set and an open set is nonempty perfect, provided the open set is a neighborhood of some point in the perfect set
+-- The closure of the intersection of a nonempty perfect set and an open set is nonempty perfect, 
+-- provided the open set is a neighborhood of some point in the perfect set
 theorem perf_nonempty_of_open_nhd_inter [topological_space α] {C : set α} 
   (hC : perf_nonempty C) (x : α) (xC : x ∈ C) (U : set α) (xU : x ∈ U) (Uop : is_open U) : perf_nonempty (closure (U ∩ C)) :=
 begin
@@ -415,8 +423,11 @@ open metric
 
 section splitting
 
-/- This section provides the inductive step in the construction of a scheme list bool → α, where α is a metric space, of perfect nonempty sets, satisfying the disjointness, closure_mono, and vanishing diameter conditions.
-If α is complete, then by the results in the scheme_map section, this will yield an injective continuous function from (ℕ → bool) to α.
+/- This section provides the inductive step in the construction of a scheme list bool → α, 
+where α is a metric space, of perfect nonempty sets, satisfying 
+the disjointness, closure_mono, and vanishing diameter conditions.
+If α is complete, then by the results in the scheme_map section, 
+this will yield an injective continuous function from (ℕ → bool) to α.
 -/
 
 lemma splitting_aux [metric_space α] {C : set α} (hC : perf_nonempty C) 
@@ -441,7 +452,8 @@ begin
   apply inter_subset_right,
 end
 
--- The inductive step: we need to "split" a nonempty perfect set into two disjoint nonempty perfect subsets with small diameters.
+-- The inductive step: we need to "split" a nonempty perfect set into 
+-- two disjoint nonempty perfect subsets with small diameters.
 lemma splitting [metric_space α] {C : set α} (hC : perf_nonempty C) (ε : ℝ) (ε_pos : ε > 0) : 
   ∃ C₀ C₁ : set α, (perf_nonempty C₀ ∧ bounded C₀ ∧ diam C₀ < ε ∧ C₀ ⊆ C) ∧ 
   (perf_nonempty C₁ ∧ bounded C₁ ∧ diam C₁ < ε ∧ C₁ ⊆ C) ∧ disjoint C₀ C₁ :=
@@ -506,7 +518,8 @@ end perf_nonempty
 
 open function 
 
---Any nonempty perfect subset of a complete metric space contains a homeomorphic image of the Cantor space ℕ → bool.
+--Any nonempty perfect subset of a complete metric space contains a homeomorphic image of 
+--the Cantor space ℕ → bool.
 theorem cantor_of_perf_nonempty [metric_space α] [complete_space α] {C : set α} 
   (hC : perf_nonempty C) : ∃ f : (ℕ → bool) → α, 
   (range f) ⊆ C ∧ continuous f ∧ injective f:=
@@ -564,10 +577,12 @@ section kernel
 
 variable [topological_space α]
 
-/- Any closed subset of a second countable space can be written as the union of a perfect set and a countable set. 
+/- Any closed subset of a second countable space can be written as 
+the union of a perfect set and a countable set. 
 The perfect set is sometimes called the ``perfect kernel'' of the closed set. 
 This result is sometimes called ``The Cantor-Bendixson Theorem''.
-In fact this conclusion can easily be strengthened in a number of ways which we do not need: V is open, V and D are disjoint, and this decomposition is the unique one with these properties.-/
+In fact this conclusion can easily be strengthened in a number of ways which we do not need: 
+V is open, V and D are disjoint, and this decomposition is the unique one with these properties.-/
 theorem ctble_union_perfect_of_closed [second_countable_topology α] {C : set α} (hclosed : is_closed C) : 
 ∃ V D : set α, (V.countable) ∧ (perfect D) ∧ (C = V ∪ D) :=
 begin
