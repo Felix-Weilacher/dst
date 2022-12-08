@@ -1,3 +1,4 @@
+/- Author : Felix Weilacher -/
 import measure_theory.constructions.polish
 
 --Reference for everything in this file: Chapter 6 of Kechris
@@ -97,7 +98,7 @@ def seq_vanishing_diam [pseudo_metric_space α]: Prop := ∀ ε > 0,
   (∀ᶠ (n : ℕ) in at_top, bounded (A n) ∧ diam (A n) < ε)
 
 --Our sequence is monotone w.r.t. ⊇ 
-def seq_mono : Prop := ∀ n :ℕ, (A n.succ) ⊆ A n
+def seq_mono : Prop := ∀ n : ℕ, (A n.succ) ⊆ A n
 
 --Our definition of monotone in terms of the successor matches the more natural one
 theorem seq_mono_iff : seq_mono ↔ ∀ n m : ℕ, m ≥ n → A m ⊆ A n :=
@@ -320,6 +321,7 @@ begin
     rw [hxy,ih] at hx,
     by_contradiction,
     have := hdisj (res y n) h,
+    rw set.disjoint_iff at this,
     apply this, swap, {exact f.map y},
     simp[hy,hx], },
   exact ih,
@@ -327,9 +329,9 @@ end
 
 --to avoid conflict with metric.eventually_nhds_iff. Not sure if there is a better way 
 --to accomplish this
-@[protected] lemma eventually_nhds_iff' {α : Type*} [topological_space α] {a : α} {p : α → Prop} : 
+/- @[protected] lemma eventually_nhds_iff' {α : Type*} [topological_space α] {a : α} {p : α → Prop} : 
   (∀ᶠ (x : α) in nhds a, p x) ↔ ∃ (t : set α), (∀ (x : α), x ∈ t → p x) ∧ is_open t ∧ a ∈ t :=
-  eventually_nhds_iff
+  eventually_nhds_iff -/
 
 --A scheme map is continuous if diameter vanishes along each branch
 theorem map_cts_of_vanishing_diam [pseudo_metric_space α] [topological_space β] 
@@ -340,7 +342,7 @@ begin
   intros x ε ε_pos,
   have := small_dist_of_vanishing_diam _ (hdiam x),
   cases this ε ε_pos with n hn,
-  rw eventually_nhds_iff',
+  rw _root_.eventually_nhds_iff,
   use pi_nat.cylinder x n,
   split, 
   { intros y hy,
@@ -492,7 +494,7 @@ begin
     apply lt_of_le_of_lt h3,
     dsimp[δ],
     linarith[min_le_left ε (dist x y)], },
-  simp only [disjoint, inf_eq_inter, bot_eq_empty, le_eq_subset],
+  rw [set.disjoint_iff],
   rintros z ⟨hzx,hzy⟩,
   have hzx' : dist z x ≤ δ, 
   { rw ← mem_closed_ball,
@@ -568,8 +570,8 @@ begin
   intros s a b aneb,
   cases b, 
   { rw bool.eq_tt_of_ne_ff aneb,
-    dsimp[D,disjoint],
-    rw inter_comm,
+    dsimp[D],
+    apply disjoint.symm _ ,
     apply hdisj, },
   rw bool.eq_ff_of_ne_tt aneb,
   dsimp[D],
