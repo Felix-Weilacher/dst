@@ -276,6 +276,12 @@ begin
   sorry,
 end
 
+theorem map_baire_measurable_eq_baire_measurable : 
+  measurable_space.map f (baire_measurable α) = baire_measurable β :=
+begin
+  sorry,
+end
+
 
 end homeomorphism
 
@@ -423,13 +429,23 @@ begin
   apply Uop.section,
 end
 
-theorem baire_measurable_sections_right [second_countable_topology α] :
-  ∀ᶠ y in (comeager β), baire_measurable_set (λ x, A.curry x y) :=
+--set_option pp.implicit true
+theorem baire_measurable_sections_right [second_countable_topology α]
+  (hA : baire_measurable_set A) : ∀ᶠ y in (comeager β), baire_measurable_set (λ x, A.curry x y) :=
 begin
-  sorry,
+  let B := prod.swap ⁻¹' A,
+  have : ∀ y : β, (λ x : α, A.curry x y) = B.curry y,
+  { intros y, refl, },
+  simp_rw this,
+  apply baire_measurable_sections_left,
+  dsimp[B],
+  rw [baire_measurable_set, measurable_set, 
+    ← map_baire_measurable_eq_baire_measurable (homeomorph.prod_comm _ _),
+     measurable_space.map] at hA,
+  exact hA,
 end
 
-lemma curry_eq_comeager [second_countable_topology α] [second_countable_topology β] 
+theorem curry_eq_comeager [second_countable_topology α] [second_countable_topology β] 
   (hmeas : baire_measurable_set A) : 
   is_comeager A ↔ ∀ᶠ x in (comeager α), ∀ᶠ y in (comeager β), (x,y) ∈ A :=
 begin
@@ -439,6 +455,13 @@ begin
   simp only [not_eventually, ← mem_compl_iff],
   apply frequently_frequently_of_not_meager hmeas.compl,
   simp[hA],
+end
+
+theorem eventually_comeager_comm [second_countable_topology α] [second_countable_topology β]
+  (hmeas : baire_measurable_set A) :
+  (∀ᶠ x in (comeager α), ∀ᶠ y in (comeager β), (x,y) ∈ A) ↔ ∀ᶠ y in (comeager β), ∀ᶠ x in (comeager α), (x,y) ∈ A :=
+begin
+  rw ← curry_eq_comeager hmeas,
 end
 
 /-
